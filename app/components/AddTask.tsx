@@ -1,11 +1,14 @@
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native'
+import { View, Text, TextInput, Button, StyleSheet, Alert, Modal, } from 'react-native'
 import React, { useState } from 'react'
 
 type AddTaskProps = {
-  handleAddTask: (task: string) => void
+  handleAddTask: (task: string) => void;
+  // handleModal: () => void;
+  handleCloseModal : () => void;
+  visible: boolean
 }
 
-const AddTask = ({ handleAddTask }: AddTaskProps) => {
+const AddTask = ({ handleAddTask, handleCloseModal, visible }: AddTaskProps) => {
   // user input and add task using useState
   const [task, setTask] = useState('');
 
@@ -18,24 +21,36 @@ const AddTask = ({ handleAddTask }: AddTaskProps) => {
     if (!task) {
       return Alert.alert('Error', 'Please enter a task');
     }
-    handleAddTask(task); 
+    handleAddTask(task);
     setTask('')
+    // handleModal()
+  
   }
 
   return (
-    <View style={styles.inputContainer}>
-      <TextInput style={styles.inputBox} placeholder="Task Name" autoCapitalize="none" value={task} onChangeText={handleInput} />
-      <Button title='Add Task' onPress={ onAddTask } />
 
-    </View>
+    <Modal transparent={false} animationType='fade' visible={visible}>
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.inputBox} placeholder="Task Name" autoCapitalize="none" value={task} onChangeText={handleInput} />
+        <View style={styles.btnGroup}>
+          <View style={styles.btn}>
+            <Button title='Add Task' onPress={onAddTask} />
+          </View>
+          <View style={styles.btn}>
+            <Button title='Cancel' onPress={handleCloseModal}/>
+          </View>
+        </View>
+      </View>
+    </Modal>
   )
 }
 
 const styles = StyleSheet.create({
   inputContainer: {
-    flexDirection: 'row',
+    flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginTop: 20,
     marginBottom: 10
   },
@@ -47,5 +62,16 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: 10
   },
+
+  btnGroup: {
+    marginTop: 20,
+    flexDirection: 'row',
+    gap: 10
+  },
+
+  btn: {
+    width: '40%',
+    marginHorizontal: 10
+  }
 })
 export default AddTask

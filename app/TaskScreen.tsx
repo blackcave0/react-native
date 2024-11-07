@@ -5,20 +5,33 @@ import TasksData from './components/TasksData';
 import AddTask from './components/AddTask';
 
 type TaskScreenProps = {
-  task : string;
-  id : string;
+  task: string;
+  id: string;
 };
 
 
 const TaskScreen = () => {
   const router = useRouter();
 
+  // handling the modal popup for showing
+  const [showModal, setShowModal] = useState(false);
+  const handleModal = () => {
+    setShowModal(true)
+  };
+
+  // handling the modal popup for hiding
+  const handleCloseModal = () => {
+    setShowModal(false)
+  };
+
   // storing task in an array
   const [taskList, setTasks] = useState<TaskScreenProps[]>([]);
 
   // handles add task
   const handleAddTask = (task: string) => {
-    setTasks((prevTask)  => [...prevTask, { task: task, id: Math.random().toString() }]);
+    setTasks((prevTask) => [...prevTask, { task: task, id: Math.random().toString() }]);
+    console.log('Add Task');
+    handleCloseModal();
   };
 
   // handles delete task
@@ -29,9 +42,14 @@ const TaskScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>TaskScreen</Text>
-      <AddTask handleAddTask={handleAddTask} />
+      {/* <Text>TaskScreen</Text> */}
 
+      {/* add task */}
+      {/* {showModal && <AddTask handleAddTask={handleAddTask} handleCloseModal={handleCloseModal} />} */}
+      <AddTask handleAddTask={handleAddTask} handleCloseModal={handleCloseModal} visible={showModal} />
+      <Button title='Add task' onPress={handleModal} />
+
+      {/* display task list */}
       {
         taskList.length === 0 ? <Text style={styles.textTitle}>Please Add Task</Text> :
           <Text style={styles.textTitle}>Your Tasks : </Text>
